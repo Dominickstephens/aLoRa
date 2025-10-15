@@ -69,9 +69,14 @@ jobs:
       # Step 4: Commit the change back to the repository if the file was modified
       # This is crucial because the script modifies a file in the workspace.
       - name: Commit changes (if any)
+              # Step 4: Commit the change back to the repository using EndBug/add-and-commit
+      - name: Commit changes (if any)
+        # ONLY run this on a 'push' to the branch, and if the script reported a change
         if: steps.cleanup.outputs.changed == 'true' && github.event_name == 'push'
-        uses: EndBug/add-and-commit@v9 # Alternative for simple commit: uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v9
         with:
-          commit_message: "Fix: Cleaned up Jupyter Notebook widgets metadata"
-          add: Version_Final_how_to_track_and_count_vehicles_with_yolov11.ipynb
+          # 🛑 CUSTOMIZE THIS PATH 🛑
+          # This MUST match the path defined in NOTEBOOK_PATH above!
+          add: YOUR_NOTEBOOK_PATH_HERE.ipynb 
+          message: "Fix: Cleaned up Jupyter Notebook widgets metadata"
           token: ${{ secrets.GITHUB_TOKEN }}
