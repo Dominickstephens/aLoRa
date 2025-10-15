@@ -38,7 +38,7 @@ jobs:
           import os
 
           # Ruta del notebook (relative to the repo root)
-          ruta = "Version_Final_how_to_track_and_count_vehicles_with_yolov11.ipynb" 
+          ruta = "Roberta_Emotions.ipynb" 
           
           if not os.path.exists(ruta):
               print(f"Error: Notebook file not found at '{ruta}'")
