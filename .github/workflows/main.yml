@@ -77,6 +77,6 @@ jobs:
         with:
           # 🛑 CUSTOMIZE THIS PATH 🛑
           # This MUST match the path defined in NOTEBOOK_PATH above!
-          add: YOUR_NOTEBOOK_PATH_HERE.ipynb 
+          add: Roberta_Emotions.ipynb 
           message: "Fix: Cleaned up Jupyter Notebook widgets metadata"
           token: ${{ secrets.GITHUB_TOKEN }}
