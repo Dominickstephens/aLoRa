@@ -4,16 +4,15 @@ on:
   # Triggers the workflow on push events to the 'main' branch
   push:
     branches:
-      - main
-  # Triggers the workflow on pull request events targeting the 'main' branch
-  pull_request:
-    branches:
-      - main
+      - '**'
       
 jobs:
   cleanup_notebook:
     # Use an operating system runner suitable for Python
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
     
     steps:
       # Step 1: Check out the repository code
@@ -36,18 +35,15 @@ jobs:
           python <<EOF
           import json
           import os
-
           # Ruta del notebook (relative to the repo root)
           ruta = "Roberta_Emotions.ipynb" 
           
           if not os.path.exists(ruta):
               print(f"Error: Notebook file not found at '{ruta}'")
               exit(1)
-
           # Cargar el notebook como JSON
           with open(ruta, "r", encoding="utf-8") as f:
               data = json.load(f)
-
           # Limpia los widgets si están dañados
           if "widgets" in data.get("metadata", {}):
               print("Corrigiendo metadata.widgets...")
@@ -55,11 +51,9 @@ jobs:
               
               # Set output to indicate a change was made
               print("::set-output name=changed::true")
-
               # Guardar el notebook limpio
               with open(ruta, "w", encoding="utf-8") as f:
                   json.dump(data, f, indent=1)
-
               print("Notebook corregido y guardado.")
           else:
               print("No se encontraron widgets dañados en la metadata.")
@@ -69,9 +63,12 @@ jobs:
       # Step 4: Commit the change back to the repository if the file was modified
       # This is crucial because the script modifies a file in the workspace.
       - name: Commit changes (if any)
+        # ONLY run this on a 'push' to the branch, and if the script reported a change
         if: steps.cleanup.outputs.changed == 'true' && github.event_name == 'push'
-        uses: stefanprodan/git-ensure-pr@v1 # Alternative for simple commit: uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v9
         with:
-          commit_message: "Fix: Cleaned up Jupyter Notebook widgets metadata"
-          add: Version_Final_how_to_track_and_count_vehicles_with_yolov11.ipynb
+          # 🛑 CUSTOMIZE THIS PATH 🛑
+          # This MUST match the path defined in NOTEBOOK_PATH above!
+          add: Roberta_Emotions.ipynb 
+          message: "${{ github.event.head_commit.message }}"
           token: ${{ secrets.GITHUB_TOKEN }}
