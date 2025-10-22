@@ -35,18 +35,15 @@ jobs:
           python <<EOF
           import json
           import os
-
           # Ruta del notebook (relative to the repo root)
           ruta = "Roberta_Emotions.ipynb" 
           
           if not os.path.exists(ruta):
               print(f"Error: Notebook file not found at '{ruta}'")
               exit(1)
-
           # Cargar el notebook como JSON
           with open(ruta, "r", encoding="utf-8") as f:
               data = json.load(f)
-
           # Limpia los widgets si están dañados
           if "widgets" in data.get("metadata", {}):
               print("Corrigiendo metadata.widgets...")
@@ -54,11 +51,9 @@ jobs:
               
               # Set output to indicate a change was made
               print("::set-output name=changed::true")
-
               # Guardar el notebook limpio
               with open(ruta, "w", encoding="utf-8") as f:
                   json.dump(data, f, indent=1)
-
               print("Notebook corregido y guardado.")
           else:
               print("No se encontraron widgets dañados en la metadata.")
